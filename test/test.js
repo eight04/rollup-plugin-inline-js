@@ -33,7 +33,7 @@ describe("rollup-plugin-inline-js", () => {
       input: `${__dirname}/cssmin/test.js`,
       expect: 'var css = "body{color:#000}";'
     });
-  });
+  }).timeout(5000);
 
   it("stringify buffer", () => {
     const fs = require("fs");
