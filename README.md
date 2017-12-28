@@ -1,6 +1,9 @@
 rollu-plugin-inline-js
 ======================
 
+[![Build Status](https://travis-ci.org/eight04/rollup-plugin-inline-js.svg?branch=master)](https://travis-ci.org/eight04/rollup-plugin-inline-js)
+[![Coverage Status](https://coveralls.io/repos/github/eight04/rollup-plugin-inline-js/badge.svg?branch=master)](https://coveralls.io/github/eight04/rollup-plugin-inline-js?branch=master)
+
 [Rollup](https://github.com/rollup/rollup) with [inline-js](https://www.npmjs.com/package/inline-js). This might be useful if you build the source with rollup and want to import (inline) some static assets at build-time.
 
 Installation
