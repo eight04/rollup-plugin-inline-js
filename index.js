@@ -1,6 +1,6 @@
-const {inline} = require("inline-js");
-const {parsePipes, pipesToString} = require("inline-js/lib/parser");
-const conf = require("inline-js/lib/conf");
+// const {init: inline} = require("inline-js");
+const {createInliner} = require("inline-js-core");
+const {parsePipes, pipesToString} = require("inline-js-core/lib/parser");
 
 function createPlugin({
   stringify = JSON.stringify,
@@ -8,9 +8,6 @@ function createPlugin({
 } = {}) {
   return {
     name: "rollup-plugin-inline-js",
-    options(inputOptions) {
-      conf.findAndLoad(inputOptions.input);
-    },
     load: id => {
       if (!/^\0inline[\w-]*:/.test(id)) {
         return;
