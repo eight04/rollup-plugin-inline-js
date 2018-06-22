@@ -24,16 +24,16 @@
   },
   "main": "index.js",
   "dependencies": {
-    "inline-js": "^0.6.0"
+    "inline-js": "^0.6.1"
   },
   "devDependencies": {
-    "coveralls": "^3.0.0",
-    "eslint": "^4.14.0",
+    "coveralls": "^3.0.1",
+    "eslint": "^4.19.1",
     "intelli-espower-loader": "^1.0.1",
-    "mocha": "^4.0.1",
-    "nyc": "^11.4.1",
-    "power-assert": "^1.4.4",
-    "rollup": "^0.53.0"
+    "mocha": "^4.1.0",
+    "nyc": "^11.9.0",
+    "power-assert": "^1.6.0",
+    "rollup": "^0.53.4"
   },
   "peerDependencies": {
     "rollup": "0.x"
