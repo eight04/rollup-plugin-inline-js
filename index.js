@@ -44,25 +44,22 @@ function createPlugin({
         transforms
       );
           
-      const dependencies = new Set;
-      extractDependencies(children);
-      
       const code = stringify(transformedContent);
       if (typeof code !== "string") {
         throw new Error(`The content loaded from ${id} is not a string`);
       }
       return {
         code: `export default ${code};`,
-        dependencies: [...dependencies]
+        dependencies: [...new Set(extractDependencies(children))]
       };
       
-      function extractDependencies(children) {
+      function* extractDependencies(children) {
         for (const {target, children: subChildren} of children) {
           if (!PATH_LIKE.has(target.name)) {
             continue;
           }
-          dependencies.add(target.args[0]);
-          extractDependencies(subChildren);
+          yield target.args[0];
+          yield* extractDependencies(subChildren);
         }
       }
     },
