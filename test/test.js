@@ -1,25 +1,14 @@
 /* eslint-env mocha */
-const assert = require("power-assert");
+const assert = require("assert");
 const rollup = require("rollup");
 
 function test(options) {
-  [
-    // first dependencies
-    "..", "inline-js",
-    // sub dependencies
-    ...[
-      "transformer", "resource", "shortcut", "conf"
-    ].map(n => `inline-js/lib/${n}`)
-  ].forEach(name => {
-    delete require.cache[require.resolve(name)];
-  });
-
   const inlinejs = require("..");
   return rollup.rollup({input: options.input, plugins: inlinejs(options)})
     .then(bundle => bundle.generate({format: "es"}))
-    .then(({code}) => {
-      const firstLine = code.split("\n")[0];
-      assert(code && firstLine === options.expect);
+    .then(result => {
+      const firstLine = result.code.split("\n")[0];
+      assert.equal(firstLine, options.expect);
     });
 }
 
@@ -28,12 +17,13 @@ function mustFail() {
 }
 
 describe("rollup-plugin-inline-js", () => {
-  it("use transform cssmin", () => {
+  it("use transform cssmin", t => {
+    t.timeout(10000);
     return test({
       input: `${__dirname}/cssmin/test.js`,
       expect: 'var css = "body{color:#000}";'
     });
-  }).timeout(5000);
+  });
 
   it("stringify buffer", () => {
     const fs = require("fs");

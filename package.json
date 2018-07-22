@@ -13,9 +13,9 @@
     "assets"
   ],
   "scripts": {
-    "lint": "eslint **/*.js --ignore-pattern coverage --cache",
-    "mocha": "mocha --require intelli-espower-loader",
-    "mocha-debug": "mocha --require intelli-espower-loader --reporter spec --inspect-brk",
+    "lint": "eslint **/*.js --cache",
+    "mocha": "mocha --require mocha-context/register",
+    "mocha-debug": "mocha --require mocha-context/register --inspect-brk",
     "nyc": "nyc --reporter=html npm run mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "npm run lint && npm run nyc",
@@ -24,20 +24,24 @@
   },
   "main": "index.js",
   "dependencies": {
-    "inline-js": "^0.7.0",
-    "inline-js-core": "^0.3.1"
+    "config-locator": "^0.1.0",
+    "inline-js-core": "^0.4.1",
+    "inline-js-default-resources": "^0.1.0",
+    "inline-js-default-transforms": "^0.1.1"
   },
   "devDependencies": {
-    "coveralls": "^3.0.1",
-    "eslint": "^4.19.1",
-    "intelli-espower-loader": "^1.0.1",
-    "mocha": "^4.1.0",
-    "nyc": "^11.9.0",
-    "power-assert": "^1.6.0",
-    "rollup": "^0.53.4"
+    "coveralls": "^3.0.2",
+    "eslint": "^5.2.0",
+    "mocha": "^5.2.0",
+    "mocha-context": "^0.1.5",
+    "nyc": "^12.0.2",
+    "rollup": "^0.63.4"
   },
   "peerDependencies": {
-    "rollup": "0.x"
+    "rollup": ">=0.61"
   },
-  "repository": "eight04/rollup-plugin-inline-js"
+  "repository": "eight04/rollup-plugin-inline-js",
+  "eslintIgnore": [
+    "coverage"
+  ]
 }
