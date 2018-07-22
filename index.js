@@ -1,44 +1,67 @@
-const {inline} = require("inline-js");
-const {parsePipes, pipesToString} = require("inline-js/lib/parser");
-const conf = require("inline-js/lib/conf");
+const path = require("path");
+
+const {createInliner} = require("inline-js-core");
+const {RESOURCES, PATH_LIKE} = require("inline-js-default-resources");
+const {TRANSFORMS} = require("inline-js-default-transforms");
+const {createConfigLocator} = require("config-locator");
+const {parsePipes, pipesToString} = require("inline-js-core/lib/parser");
 
 function createPlugin({
   stringify = JSON.stringify,
   inlineOptions
 } = {}) {
+  const inliner = createInliner(inlineOptions);
+  RESOURCES.forEach(inliner.resource.add);
+  TRANSFORMS.forEach(inliner.transformer.add);
+  
+  const configLocator = createConfigLocator({config: ".inline.js"});
+  
   return {
     name: "rollup-plugin-inline-js",
-    options(inputOptions) {
-      conf.findAndLoad(inputOptions.input);
-    },
-    load: id => {
+    load: async id => {
       if (!/^\0inline[\w-]*:/.test(id)) {
         return;
       }
       id = id.slice(1);
-      const pipes = parsePipes(id);
-      let source;
-      if (pipes[1] && pipes[1].name === "importer") {
-        source = {
-          name: "file",
-          args: pipes[1].args
-        };
-        pipes.splice(1, 1);
+      const [target, source, ...transforms] = parsePipes(id);
+      target.name = target.name.replace(/^inline-?/, "") || "file";
+      source.name = "file";
+      
+      if (PATH_LIKE.has(target.name)) {
+        const file = path.resolve(source.args[0], target.args[0]);
+        const result = await configLocator.findConfig(file);
+        if (result) {
+          inliner.useConfig(result.config);
+        }
       }
-      const target = {
-        name: pipes[0].name.replace(/^inline-?/, "") || "file",
-        args: pipes[0].args
+      const {content, children} = await inliner.inline(target, source);
+      const transformedContent = await inliner.transformer.transform(
+        {
+          source,
+          inlineTarget: target
+        },
+        content,
+        transforms
+      );
+          
+      const code = stringify(transformedContent);
+      if (typeof code !== "string") {
+        throw new Error(`The content loaded from ${id} is not a string`);
+      }
+      return {
+        code: `export default ${code};`,
+        dependencies: [...new Set(extractDependencies(children))]
       };
-      const options = {source, target, transforms: pipes.slice(1)};
-      Object.assign(options, inlineOptions);
-      return inline(options)
-        .then(content => {
-          content = stringify(content);
-          if (typeof content !== "string") {
-            throw new Error(`The content loaded from ${id} is not a string`);
+      
+      function* extractDependencies(children) {
+        for (const {target, children: subChildren} of children) {
+          if (!PATH_LIKE.has(target.name)) {
+            continue;
           }
-          return `export default ${content};`;
-        });
+          yield target.args[0];
+          yield* extractDependencies(subChildren);
+        }
+      }
     },
     resolveId: (importee, importer) => {
       if (!/^inline[\w-]*:/.test(importee)) {
