@@ -67,4 +67,11 @@ describe("rollup-plugin-inline-js", () => {
       expect: `var cd = ${JSON.stringify(cd)};`
     });
   });
+  
+  it("nested inline", () => {
+    return test({
+      input: `${__dirname}/nested/test.js`,
+      expect: 'var css = "body{color:#000}";'
+    });
+  });
 });

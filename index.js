@@ -24,14 +24,11 @@ function createPlugin({
       }
       id = id.slice(1);
       const pipes = parsePipes(id);
-      let source;
-      if (pipes[1] && pipes[1].name === "importer") {
-        source = {
-          name: "file",
-          args: pipes[1].args
-        };
-        pipes.splice(1, 1);
-      }
+      const source = {
+        name: "file",
+        args: pipes[1].args
+      };
+      pipes.splice(1, 1);
       const target = {
         name: pipes[0].name.replace(/^inline-?/, "") || "file",
         args: pipes[0].args
@@ -73,9 +70,7 @@ function createPlugin({
         
       function loadConfig() {
         if (PATH_LIKE.has(target.name)) {
-          const file = source ?
-            path.resolve(source.args[0], target.args[0]) :
-            target.args[0];
+          const file = path.resolve(source.args[0], target.args[0]);
           return configLocator.findConfig(file)
             .then(result => {
               if (result) {
