@@ -119,6 +119,10 @@ Create the plugin instance.
 Changelog
 ---------
 
+* 0.2.1 (Jul 22, 2018)
+
+  - Fix: exclude useless stuff in the package.
+
 * 0.2.0 (Jul 22, 2018)
 
   - Update dependencies. `node.js@8.x`, `rollup@>=0.61`, `inline-js-core@0.4.x`.
