@@ -18,7 +18,7 @@ function mustFail() {
 
 describe("rollup-plugin-inline-js", () => {
   it("use transform cssmin", t => {
-    t.timeout(10000);
+    t.timeout(20000);
     return test({
       input: `${__dirname}/cssmin/test.js`,
       expect: 'var css = "body{color:#000}";'

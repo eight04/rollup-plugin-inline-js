@@ -18,67 +18,52 @@ function createPlugin({
   
   return {
     name: "rollup-plugin-inline-js",
-    load: id => {
+    load: async id => {
       if (!/^\0inline[\w-]*:/.test(id)) {
         return;
       }
       id = id.slice(1);
-      const pipes = parsePipes(id);
-      const source = {
-        name: "file",
-        args: pipes[1].args
-      };
-      pipes.splice(1, 1);
-      const target = {
-        name: pipes[0].name.replace(/^inline-?/, "") || "file",
-        args: pipes[0].args
-      };
-      return loadConfig()
-        .then(() => inliner.inline(target, source))
-        .then(({content, children}) => 
-          inliner.transformer.transform(
-            {
-              source,
-              inlineTarget: target
-            },
-            content,
-            pipes.slice(1)
-          )
-            .then(content => {
-              const dependencies = new Set;
-              extractTarget(children);
-              const code = stringify(content);
-              if (typeof code !== "string") {
-                throw new Error(`The content loaded from ${id} is not a string`);
-              }
-              return {
-                code: `export default ${code};`,
-                dependencies: [...dependencies]
-              };
-              
-              function extractTarget(results) {
-                for (const {target, children} of results) {
-                  if (!PATH_LIKE.has(target.name)) {
-                    continue;
-                  }
-                  dependencies.add(target.args[0]);
-                  extractTarget(children);
-                }
-              }
-            })
-        );
-        
-      function loadConfig() {
-        if (PATH_LIKE.has(target.name)) {
-          const file = path.resolve(source.args[0], target.args[0]);
-          return configLocator.findConfig(file)
-            .then(result => {
-              if (result) {
-                inliner.useConfig(result.config);
-              }
-            });
+      const [target, source, ...transforms] = parsePipes(id);
+      target.name = target.name.replace(/^inline-?/, "") || "file";
+      source.name = "file";
+      
+      if (PATH_LIKE.has(target.name)) {
+        const file = path.resolve(source.args[0], target.args[0]);
+        const result = await configLocator.findConfig(file);
+        if (result) {
+          inliner.useConfig(result.config);
         }
-        return Promise.resolve();
+      }
+      const {content, children} = await inliner.inline(target, source);
+      const transformedContent = await inliner.transformer.transform(
+        {
+          source,
+          inlineTarget: target
+        },
+        content,
+        transforms
+      );
+          
+      const dependencies = new Set;
+      extractDependencies(children);
+      
+      const code = stringify(transformedContent);
+      if (typeof code !== "string") {
+        throw new Error(`The content loaded from ${id} is not a string`);
+      }
+      return {
+        code: `export default ${code};`,
+        dependencies: [...dependencies]
+      };
+      
+      function extractDependencies(children) {
+        for (const {target, children: subChildren} of children) {
+          if (!PATH_LIKE.has(target.name)) {
+            continue;
+          }
+          dependencies.add(target.args[0]);
+          extractDependencies(subChildren);
+        }
       }
     },
     resolveId: (importee, importer) => {

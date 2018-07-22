@@ -43,5 +43,8 @@
   "repository": "eight04/rollup-plugin-inline-js",
   "eslintIgnore": [
     "coverage"
-  ]
+  ],
+  "engines": {
+    "node": ">=8"
+  }
 }
