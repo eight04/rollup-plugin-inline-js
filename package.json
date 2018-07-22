@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-inline-js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Rollup with inline-js",
   "author": "eight04 <eight04@gmail.com>",
   "license": "MIT",
