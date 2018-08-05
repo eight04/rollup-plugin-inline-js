@@ -1,77 +1,102 @@
 /* eslint-env mocha */
 const assert = require("assert");
+
 const rollup = require("rollup");
+const {withDir} = require("tempdir-yaml");
 
-function test(options) {
-  const inlinejs = require("..");
-  return rollup.rollup({input: options.input, plugins: inlinejs(options)})
-    .then(bundle => bundle.generate({format: "es"}))
-    .then(result => {
-      const firstLine = result.code.split("\n")[0];
-      assert.equal(firstLine, options.expect);
-    });
-}
+const createPlugin = require("..");
 
-function mustFail() {
-  throw new Error("must fail");
+async function bundle(file) {
+  const warns = [];
+  const bundle = await rollup.rollup({
+    input: [file],
+    plugins: [
+      createPlugin()
+    ],
+    experimentalCodeSplitting: true,
+    onwarn(warn) {
+      // https://github.com/rollup/rollup/issues/2308
+      warns.push(warn);
+    }
+  });
+  const modules = bundle.cache.modules.slice();
+  const result = await bundle.generate({
+    format: "es",
+    legacy: true,
+    freeze: false,
+    sourcemap: true
+  });
+  result.warns = warns;
+  result.modules = modules;
+  return result;
 }
 
 describe("rollup-plugin-inline-js", () => {
   it("use transform cssmin", t => {
     t.timeout(20000);
-    return test({
-      input: `${__dirname}/cssmin/test.js`,
-      expect: 'var css = "body{color:#000}";'
+    return withDir(`
+      - entry.js: |
+          console.log($inline("test.css|cssmin|stringify"));
+      - test.css: |
+          body {
+            color: black;
+          }
+    `, async resolve => {
+      const result = await bundle(resolve("entry.js"));
+      assert.equal(result.output["entry.js"].code.trim(), 'console.log("body{color:#000}");');
     });
   });
 
-  it("stringify buffer", () => {
-    const fs = require("fs");
-    
-    function stringify(content) {
-      if (Buffer.isBuffer(content)) {
-        return `Buffer.from(${JSON.stringify(content.toString("base64"))}, "base64")`;
-      }
-      return JSON.stringify(content);
-    }
-    
-    return test({
-      input: `${__dirname}/stringify/test.js`,
-      expect: fs.readFileSync(`${__dirname}/stringify/expect.js`, "utf8"),
-      stringify
-    });
-  });
-  
-  it("use config", () => {
-    return test({
-      input: `${__dirname}/conf/test.js`,
-      expect: 'var css = "OK";'
-    });
-  });
-  
-  it("throw if content is not a string", () => {
-    return test({
-      input: `${__dirname}/allow-null/test.js`
+  it("use config", () =>
+    withDir(`
+      - entry.js: |
+          console.log($inline("foo.txt|trim|mytransform"));
+      - foo.txt: |
+          foo
+      - .inline.js: |
+          module.exports = {
+            transforms: [
+              {
+                name: "mytransform",
+                transform: (context, content) => content.toUpperCase()
+              }
+            ]
+          };
+    `, async resolve => {
+      const result = await bundle(resolve("entry.js"));
+      assert.equal(result.output["entry.js"].code.trim(), 'console.log(FOO);');
     })
-      .then(mustFail)
-      .catch(err => {
-        assert(err.message.includes("not a string"));
-      });
-  });
+  );
   
-  it("test cmd resource", () => {
-    const path = require("path");
-    const cd = path.resolve(`${__dirname}/cmd`);
-    return test({
-      input: `${__dirname}/cmd/test.js`,
-      expect: `var cd = ${JSON.stringify(cd)};`
-    });
-  });
-  
-  it("nested inline", () => {
-    return test({
-      input: `${__dirname}/nested/test.js`,
-      expect: 'var css = "body{color:#000}";'
-    });
-  });
+  it("test cmd resource", () =>
+    withDir(String.raw`
+      - entry.js: |
+          console.log($inline("cmd: node -e \"console.log(process.cwd())\"|trim|stringify"));
+    `, async resolve => {
+      const result = await bundle(resolve("entry.js"));
+      assert.equal(
+        result.output["entry.js"].code.trim(),
+        `console.log(${JSON.stringify(resolve())});`
+      );
+    })
+  );
+
+  it("nested inline", () =>
+    withDir(`
+      - entry.js: |
+          console.log($inline("test.css|cssmin|stringify"));
+      - test.css: |
+          body {
+            color: $inline("color.txt");
+          }
+      - color.txt: |
+          black
+    `, async resolve => {
+      const result = await bundle(resolve("entry.js"));
+      assert.equal(
+        result.output["entry.js"].code.trim(),
+        'console.log("body{color:#000}");'
+      );
+    })
+  );
 });
