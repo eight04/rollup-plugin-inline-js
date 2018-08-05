@@ -18,7 +18,6 @@ function* extractDependencies(children) {
 function createPlugin({
   include,
   exclude,
-  // stringify = JSON.stringify,
   inlineOptions
 } = {}) {
   const filter = createFilter(include, exclude);
