@@ -54,6 +54,9 @@ function createPlugin({
         code: content,
         dependencies: [...new Set(extractDependencies(children))]
       };
+    },
+    buildEnd: () => {
+      inliner.resource.cache.clear();
     }
   };
 }
