@@ -63,6 +63,11 @@ The `inlineOptions` object would be passed to [`createInliner` function](https:/
 Changelog
 ---------
 
+* 0.3.0 (Aug 5, 2018)
+
+  - **The plugin had been rewritten and it works in a different way.**
+  - The plugin now transform the source file. So now you can write `$inline` directives in the source file just like using `inline-js` CLI.
+
 * 0.2.1 (Jul 22, 2018)
 
   - Fix: exclude useless stuff in the package.
