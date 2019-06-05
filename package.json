@@ -17,7 +17,6 @@
     "mocha": "mocha --require mocha-context/register",
     "mocha-debug": "mocha --require mocha-context/register --inspect-brk",
     "nyc": "nyc --reporter=html npm run mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "npm run lint && npm run nyc",
     "preversion": "npm test",
     "postversion": "git push --follow-tags && npm publish"
@@ -31,7 +30,6 @@
     "rollup-pluginutils": "^2.3.0"
   },
   "devDependencies": {
-    "coveralls": "^3.0.2",
     "eslint": "^5.3.0",
     "mocha": "^5.2.0",
     "mocha-context": "^0.1.5",
