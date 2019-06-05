@@ -34,7 +34,7 @@
     "mocha": "^6.1.4",
     "mocha-context": "^0.1.5",
     "rollup": "^1.14.1",
-    "tempdir-yaml": "^0.2.1"
+    "tempdir-yaml": "^0.3.0"
   },
   "peerDependencies": {
     "rollup": "^1.14.1"
