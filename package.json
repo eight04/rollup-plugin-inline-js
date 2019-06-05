@@ -26,14 +26,14 @@
     "inline-js-core": "^0.5.0",
     "inline-js-default-resources": "^0.1.0",
     "inline-js-default-transforms": "^0.1.1",
-    "rollup-pluginutils": "^2.3.0"
+    "rollup-pluginutils": "^2.8.1"
   },
   "devDependencies": {
     "c8": "^5.0.1",
     "eslint": "^5.16.0",
     "mocha": "^6.1.4",
     "mocha-context": "^0.1.5",
-    "rollup": "^0.63.5",
+    "rollup": "^1.14.1",
     "tempdir-yaml": "^0.2.1"
   },
   "peerDependencies": {
