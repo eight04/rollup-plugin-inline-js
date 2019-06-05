@@ -28,6 +28,10 @@ async function bundle(file) {
   });
   result.warns = warns;
   result.modules = modules;
+  result.namedOutput = result.output.reduce((o, chunk) => {
+    o[chunk.fileName] = chunk;
+    return o;
+  }, {});
   return result;
 }
 
@@ -43,7 +47,7 @@ describe("rollup-plugin-inline-js", () => {
           }
     `, async resolve => {
       const result = await bundle(resolve("entry.js"));
-      assert.equal(result.output["entry.js"].code.trim(), 'console.log("body{color:#000}");');
+      assert.equal(result.namedOutput["entry.js"].code.trim(), 'console.log("body{color:#000}");');
     });
   });
 
@@ -64,7 +68,7 @@ describe("rollup-plugin-inline-js", () => {
           };
     `, async resolve => {
       const result = await bundle(resolve("entry.js"));
-      assert.equal(result.output["entry.js"].code.trim(), 'console.log(FOO);');
+      assert.equal(result.namedOutput["entry.js"].code.trim(), 'console.log(FOO);');
     })
   );
   
@@ -75,7 +79,7 @@ describe("rollup-plugin-inline-js", () => {
     `, async resolve => {
       const result = await bundle(resolve("entry.js"));
       assert.equal(
-        result.output["entry.js"].code.trim(),
+        result.namedOutput["entry.js"].code.trim(),
         `console.log(${JSON.stringify(resolve())});`
       );
     })
@@ -94,7 +98,7 @@ describe("rollup-plugin-inline-js", () => {
     `, async resolve => {
       const result = await bundle(resolve("entry.js"));
       assert.equal(
-        result.output["entry.js"].code.trim(),
+        result.namedOutput["entry.js"].code.trim(),
         'console.log("body{color:#000}");'
       );
     })
