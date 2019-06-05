@@ -30,8 +30,8 @@
     "rollup-pluginutils": "^2.3.0"
   },
   "devDependencies": {
-    "eslint": "^5.3.0",
-    "mocha": "^5.2.0",
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
     "mocha-context": "^0.1.5",
     "nyc": "^12.0.2",
     "rollup": "^0.63.5",
