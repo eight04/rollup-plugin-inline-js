@@ -1,7 +1,7 @@
 rollu-plugin-inline-js
 ======================
 
-[![Build Status](https://travis-ci.org/eight04/rollup-plugin-inline-js.svg?branch=master)](https://travis-ci.org/eight04/rollup-plugin-inline-js)
+[![Build Status](https://travis-ci.com/eight04/rollup-plugin-inline-js.svg?branch=master)](https://travis-ci.com/eight04/rollup-plugin-inline-js)
 [![Coverage Status](https://coveralls.io/repos/github/eight04/rollup-plugin-inline-js/badge.svg?branch=master)](https://coveralls.io/github/eight04/rollup-plugin-inline-js?branch=master)
 [![install size](https://packagephobia.now.sh/badge?p=rollup-plugin-inline-js)](https://packagephobia.now.sh/result?p=rollup-plugin-inline-js)
 
