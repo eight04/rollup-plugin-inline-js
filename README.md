@@ -65,7 +65,7 @@ Changelog
 
 * 0.4.0 (Jun 6, 2019)
 
-  - Bump dependencies. Update to rollup@1.14.1.
+  - Bump dependencies. **Upgrade to rollup@1.14.1.**
   - Fix: remove deprecated `dependencies` array.
 
 * 0.3.0 (Aug 5, 2018)
