@@ -63,6 +63,11 @@ The `inlineOptions` object would be passed to [`createInliner` function](https:/
 Changelog
 ---------
 
+* 0.4.0 (Jun 6, 2019)
+
+  - Bump dependencies. Update to rollup@1.14.1.
+  - Fix: remove deprecated `dependencies` array.
+
 * 0.3.0 (Aug 5, 2018)
 
   - **The plugin had been rewritten and it works in a different way.**

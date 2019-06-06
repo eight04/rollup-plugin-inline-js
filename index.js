@@ -30,7 +30,7 @@ function createPlugin({
   
   return {
     name: "rollup-plugin-inline-js",
-    transform: async (code, id) => {
+    async transform(code, id) {
       if (!filter(id)) {
         return;
       }
@@ -50,9 +50,11 @@ function createPlugin({
         },
         content: code
       });
+      for (const file of new Set(extractDependencies(children))) {
+        this.addWatchFile(file);
+      }
       return {
-        code: content,
-        dependencies: [...new Set(extractDependencies(children))]
+        code: content
       };
     },
     buildEnd: () => {
