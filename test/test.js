@@ -36,8 +36,8 @@ async function bundle(file) {
 }
 
 describe("rollup-plugin-inline-js", () => {
-  it("use transform cssmin", t => {
-    t.timeout(20000);
+  it("use transform cssmin", function () {
+    this.timeout(20000);
     return withDir(`
       - entry.js: |
           console.log($inline("test.css|cssmin|stringify"));

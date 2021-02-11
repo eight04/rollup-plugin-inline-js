@@ -14,30 +14,28 @@
   ],
   "scripts": {
     "lint": "eslint **/*.js --cache",
-    "mocha": "mocha --require mocha-context/register",
-    "mocha-debug": "mocha --require mocha-context/register --inspect-brk",
-    "test": "npm run lint && c8 --reporter lcov npm run mocha",
+    "mocha-debug": "mocha --inspect-brk",
+    "test": "npm run lint && c8 --reporter lcov mocha",
     "preversion": "npm test",
     "postversion": "git push --follow-tags && npm publish"
   },
   "main": "index.js",
   "dependencies": {
+    "@rollup/pluginutils": "^4.1.0",
     "config-locator": "^0.1.0",
     "inline-js-core": "^0.5.0",
     "inline-js-default-resources": "^0.1.0",
-    "inline-js-default-transforms": "^0.1.1",
-    "rollup-pluginutils": "^2.8.1"
+    "inline-js-default-transforms": "^0.1.2"
   },
   "devDependencies": {
-    "c8": "^5.0.1",
-    "eslint": "^5.16.0",
-    "mocha": "^6.1.4",
-    "mocha-context": "^0.1.5",
-    "rollup": "^1.14.1",
+    "c8": "^7.5.0",
+    "eslint": "^7.19.0",
+    "mocha": "^8.2.1",
+    "rollup": "^2.38.5",
     "tempdir-yaml": "^0.3.0"
   },
   "peerDependencies": {
-    "rollup": "^1.14.1"
+    "rollup": "^2.38.5"
   },
   "repository": "eight04/rollup-plugin-inline-js",
   "eslintIgnore": [
