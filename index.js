@@ -1,4 +1,4 @@
-const {createFilter} = require("rollup-pluginutils");
+const {createFilter} = require("@rollup/pluginutils");
 
 const {createInliner} = require("inline-js-core");
 const {RESOURCES, PATH_LIKE} = require("inline-js-default-resources");
