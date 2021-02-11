@@ -63,6 +63,10 @@ The `inlineOptions` object would be passed to [`createInliner` function](https:/
 Changelog
 ---------
 
+* 0.5.0 (Feb 12, 2021)
+
+  - Bump dependencies. **Upgrade to rollup@2.38.5**.
+
 * 0.4.0 (Jun 6, 2019)
 
   - Bump dependencies. **Upgrade to rollup@1.14.1.**
